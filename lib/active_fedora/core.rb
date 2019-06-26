@@ -62,6 +62,13 @@ module ActiveFedora
       refresh
       load_attached_files
       self
+    rescue Ldp::Gone => err
+      logger.info("Tried to reload an object that has been destroyed; " \
+                        "this is probably due to mismanagement of the object's " \
+                        "@destroyed variable, which should prevent us from " \
+                        "sending Fedora requests for objects that have been " \
+                        "destroyed in-memory: #{err.message}")
+      raise ActiveFedora::ObjectNotFoundError
     end
 
     # Initialize an empty model object and set its +resource+
